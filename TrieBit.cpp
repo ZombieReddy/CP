@@ -41,7 +41,7 @@ struct TNode {
         }
     }
     
-    // Max ? ^ val
+    // Max {a[i] ^ val}
     int maxXor(int val) {
         int r = 0;
         TNode *cur = this;
@@ -57,7 +57,7 @@ struct TNode {
         return r;
     }
     
-    // Count ? ^ val < lim
+    // Count of a[i] ^ val < lim
     int countLess(int val, int lim) {
         int r = 0;
         TNode *cur = this;
@@ -71,6 +71,24 @@ struct TNode {
                 if (cur->child[bv] != nullptr)
                     r += cur->child[bv]->cnt;
                 cur = cur->child[1-bv];
+            }
+        }
+        return r;
+    }
+    
+    // mEx of {ar[i] ^ val}, assuming unique ar[i]
+    int mexXor(int val) {
+        int r = 0;
+        TNode *cur = this;
+        for (int i = BITS; i >= 0 && cur; i--) {
+            int b = (val >> i & 1);
+            if(cur->child[b] == nullptr)
+                break;
+            if (cur->child[b]->cnt < (1<<i)) {
+                cur = cur->child[b];
+            } else {
+                r += 1 << i;
+                cur = cur->child[1-b];
             }
         }
         return r;
